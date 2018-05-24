@@ -555,7 +555,7 @@ Simplicity saves time and allows us to focus on *content* rather than *formattin
 
 ## But...
 
-Sometimes we need something more complicated. Maybe we want to group rows or columns in a table, for example. At this point we have to make a choice, between
+Sometimes we want something more complicated. We have to choose:
 
 --
 
@@ -571,13 +571,16 @@ Sometimes we need something more complicated. Maybe we want to group rows or col
 
 # Simplicity vs Control: Example
 
-The [`kableExtra`]() package is an excellent add-on package for adding complexity to tables in either LaTeX or HTML. **But**: To use those features, we must specify `kable(..., format = "latex")` or `format = "html"`.
+The [`kableExtra`]() package is an excellent add-on package for adding complexity to tables in either LaTeX or HTML. **But**: Some of its features are only available in HTML documents.
 
-```{r fancy_table, eval = FALSE}
+```{r fancy_table_demo, eval = FALSE}
 kable(head(iris), format = "...") %>%
   group_rows("Group 1", 1, 3) %>%
   group_rows("Group 2", 4, 6) %>%
-  add_header_above(c("Species" = 2, "Petal" = 2))
+  add_header_above(c("Sepal" = 2, "Petal" = 2)) %>%
+  ## HTML only
+  # scroll_box(width = "250px", height = "200px") %>%
+  # kable_styling(bootstrap_options = "hover")
 
 ```
 
@@ -586,7 +589,18 @@ kable(head(iris), format = "...") %>%
 ]
 
 .pull-right[
-![`kable(..., format = "html")`](images/kextra_html.png)
+```{r fancy_table, echo = FALSE}
+kable(iris) %>%
+  add_header_above(
+    c("Sepal" = 2, "Petal" = 2, "Species" = 1)
+  ) %>%
+  scroll_box(
+    width = "300px", height = "300px"
+  ) %>%
+  kable_styling(bootstrap_options = "hover")
+
+```
+
 ]
 
 --
