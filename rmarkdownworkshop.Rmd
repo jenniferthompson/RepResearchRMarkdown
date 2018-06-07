@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research with RMarkdown"
 author: "Jennifer Thompson, MPH"
-date: "2018-06-05"
+date: "Osaka City University, 2018-06-05"
 output:
   xaringan::moon_reader:
     css: ["default", "metropolis", "metropolis-fonts"]
@@ -157,7 +157,7 @@ ParentStudy \
 
 ```
 eg, "OurRCT"
-  Analysis data, projects related to OurRCT
+  Analysis datasets from OurRCT
   Subfolder, Project 1
     Additional data only for Project 1
     Analysis script for Project 1
@@ -168,7 +168,7 @@ eg, "OurRCT"
 
 ]
 
-For someone else to take over Project 2, everything they need will be in the `Project2` folder (and `analysisdata/`).
+For someone else to take over Project 2, everything they need will be in the `Project2` folder and `analysisdata/`.
 
 --
 
@@ -191,8 +191,10 @@ All data management, analysis, and figure generation done in a single script
 
 ### Reasonable exceptions (not exhaustive)
 
-- Large projects with lots of data management required
-- Separate scripts of helper functions
+- Large projects with lots of data management required (this is the reason for the `analysisdata/` directory on the last slide!)
+- Separate scripts of helper functions (eg, yesterday's data monitoring tutorial) - often easier to maintain and debug these in a separate script
+
+    If you have many helper functions, you could even consider creating an R package for your project!
 
 ---
 
@@ -462,6 +464,9 @@ Or, we can specify the default format here, but use render() to create output of
     - You can specify whatever output format you like: `pdf_document`, `word_document`, `html_document` (or try them all!).
 1. Render it again, using `rmarkdown::render("myfile.md")`.
 1. Check to make sure you got the file output you requested.
+
+🚨 **NOTE** 🚨: *Even though we are not using LaTeX for formatting, you will need to have a TeX installation on your computer if you want to create a PDF.*
+
 --
 
 1. BONUS: Leave the file YAML the same, but use `rmarkdown::render()`'s `output_format` option to specify a *different* output format than the one in your YAML.
@@ -974,29 +979,44 @@ Fit a linear model predicting ozone using solar radiation, wind, and temperature
 1. Visually check model assumptions using residual vs fitted and Q-Q plots
 1. Collapse the plots in a Details section, with each in a separate tabset
 
-```{r demo_model, fig.width = 9, fig.height = 4}
+```{r demo_model}
 mymod <- lm(Ozone ~ Solar.R + Wind + Temp, data = airquality)
 
-par(mfrow = c(1, 2)) ## don't do this part! just to fit on the slide :)
-plot(resid(mymod) ~ fitted(mymod))
-qqnorm(resid(mymod))
-par(mfrow = c(1, 1))
-
 ```
+
+.pull-left[
+```{r rp, fig.height = 5}
+plot(resid(mymod) ~ fitted(mymod))
+```
+]
+
+.pull-right[
+```{r qq, fig.height = 5}
+qqnorm(resid(mymod))
+```
+]
 
 ---
 
 # We Should Fix That
 
+Let's log transform our outcome and re-check our assumptions:
+
 ```{r demo_model_log, fig.width = 9, fig.height = 4}
 mymod <- lm(log(Ozone) ~ Solar.R + Wind + Temp, data = airquality)
-
-par(mfrow = c(1, 2)) ## don't do this part! just to fit on the slide :)
-plot(resid(mymod) ~ fitted(mymod))
-qqnorm(resid(mymod))
-par(mfrow = c(1, 1))
-
 ```
+
+.pull-left[
+```{r rp_log, fig.height = 5}
+plot(resid(mymod) ~ fitted(mymod))
+```
+]
+
+.pull-right[
+```{r qq_log, fig.height = 5}
+qqnorm(resid(mymod))
+```
+]
 
 ---
 
@@ -1023,7 +1043,7 @@ kable(as.data.frame(summary(mymod)$coefficients), format = "html", digits = 2) %
   group_rows("Predictors", 2, 4) %>%
   row_spec(3:4, italic = TRUE) %>%
   kable_styling(bootstrap_options = c("hover", "condensed"), full_width = FALSE) %>%
-  footnote(general = "Not all Bootstrap options work in xaringan; move to demo")
+  footnote(general = "Due to CSS, not all Bootstrap options work in these slides; move to demo")
 
 ```
 
@@ -1265,21 +1285,17 @@ Ozone levels over time: `r ozone_spark`
 
 ---
 
-# Additional Resources
+# Additional RMarkdown/knitr Resources
 
-- RMarkdown/knitr:
-    - [RMarkdown Web Site](https://rmarkdown.rstudio.com/)
-    - [RMarkdown "cheat sheet"](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
-    - [`knitr` chunk options](https://yihui.name/knitr/options/)
-- Interactive graphics:
-    - [`plotly` documentation](https://plot.ly/r)
-    - [`sparkline` documentation](https://cran.r-project.org/web/packages/sparkline/sparkline.pdf)
-- Reproducible Research:
-    - [Jenny Bryan on project-oriented workflows](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/)
+*Please see earlier sections for links to resources on project-oriented workflows, tables, and options for interactive graphics.*
 
+- [RMarkdown Web Site](https://rmarkdown.rstudio.com/)
+- [RMarkdown "cheat sheet"](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
+- [`knitr` chunk options](https://yihui.name/knitr/options/)
+    
 ---
 
-# Markdown Syntax Reference
+# Markdown Syntax Quick Reference
 
 *For more details, see [daringfireball.net/projects/markdown/syntax](https://daringfireball.net/projects/markdown/syntax)*
 
